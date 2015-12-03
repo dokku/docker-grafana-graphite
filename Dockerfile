@@ -40,7 +40,7 @@ RUN     git clone https://github.com/graphite-project/graphite-web.git /src/grap
 # Install StatsD
 RUN     git clone https://github.com/etsy/statsd.git /src/statsd                                                                        &&\
         cd /src/statsd                                                                                                                  &&\
-        git checkout v0.7.2
+        git checkout v0.8.0
 
 
 # Install Grafana
@@ -92,6 +92,9 @@ ADD     ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Grafana
 EXPOSE  80
+
+# Graphite
+EXPOSE 2003
 
 # StatsD UDP port
 EXPOSE  8125/udp
