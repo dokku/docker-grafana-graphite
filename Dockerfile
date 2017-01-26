@@ -46,9 +46,9 @@ RUN     git clone https://github.com/etsy/statsd.git /src/statsd                
 # Install Grafana
 RUN     mkdir /src/grafana                                                                                    &&\
         mkdir /opt/grafana                                                                                    &&\
-        wget https://grafanarel.s3.amazonaws.com/builds/grafana-4.0.2-1481203731.linux-x64.tar.gz -O /src/grafana.tar.gz &&\
-        tar -xzf /src/grafana.tar.gz -C /opt/grafana --strip-components=1                                     &&\
-        rm /src/grafana.tar.gz
+        wget https://grafanarel.s3.amazonaws.com/builds/grafana-4.1.1-1484211277.linux-x64.tar.gz -O /src/grafana/grafana.tar.gz &&\
+        tar -xzf /src/grafana/grafana.tar.gz -C /opt/grafana --strip-components=1                             &&\
+        rm /src/grafana/grafana.tar.gz
 
 
 # ----------------- #

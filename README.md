@@ -1,5 +1,5 @@
-StatsD + Graphite + Grafana 3
------------------------------
+StatsD + Graphite + Grafana 4.1
+-------------------------------
 
 This image contains a sensible default configuration of StatsD, Graphite and Grafana. This image is used as a base for [dokku](https://github.com/progrium/dokku) graphite-statsd plugin.
 
