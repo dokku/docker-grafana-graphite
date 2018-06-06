@@ -2,7 +2,6 @@ version: '2'
 services:
   grafana_graphite:
     build: .
-    image: kamon/grafana_graphite
     container_name: kamon-grafana-dashboard
     ports:
       - '80:80'
