@@ -12,7 +12,7 @@ RUN     apt-get -y install software-properties-common
 RUN     add-apt-repository -y ppa:chris-lea/node.js
 RUN     apt-get -y update
 RUN     apt-get -y install python-django-tagging python-simplejson python-memcache python-ldap python-cairo python-pysqlite2 python-support \
-                           python-pip gunicorn supervisor nginx-light nodejs git wget curl openjdk-7-jre build-essential python-dev
+  python-pip gunicorn supervisor nginx-light nodejs git wget curl openjdk-7-jre build-essential python-dev
 
 RUN     pip install Twisted==11.1.0
 RUN     pip install Django==1.5
@@ -22,33 +22,33 @@ RUN     npm install ini chokidar
 # Checkout the stable branches of Graphite, Carbon and Whisper and install from there
 RUN     mkdir /src
 RUN     git clone https://github.com/graphite-project/whisper.git /src/whisper            &&\
-        cd /src/whisper                                                                   &&\
-        git checkout 0.9.x                                                                &&\
-        python setup.py install
+  cd /src/whisper                                                                   &&\
+  git checkout 0.9.x                                                                &&\
+  python setup.py install
 
 RUN     git clone https://github.com/graphite-project/carbon.git /src/carbon              &&\
-        cd /src/carbon                                                                    &&\
-        git checkout 0.9.x                                                                &&\
-        python setup.py install
+  cd /src/carbon                                                                    &&\
+  git checkout 0.9.x                                                                &&\
+  python setup.py install
 
 
 RUN     git clone https://github.com/graphite-project/graphite-web.git /src/graphite-web  &&\
-        cd /src/graphite-web                                                              &&\
-        git checkout 0.9.x                                                                &&\
-        python setup.py install
+  cd /src/graphite-web                                                              &&\
+  git checkout 0.9.x                                                                &&\
+  python setup.py install
 
 # Install StatsD
 RUN     git clone https://github.com/etsy/statsd.git /src/statsd                                                                        &&\
-        cd /src/statsd                                                                                                                  &&\
-        git checkout v0.8.0
+  cd /src/statsd                                                                                                                  &&\
+  git checkout v0.8.0
 
 
 # Install Grafana
 RUN     mkdir /src/grafana                                                                                    &&\
-        mkdir /opt/grafana                                                                                    &&\
-        wget https://grafanarel.s3.amazonaws.com/builds/grafana-4.1.1-1484211277.linux-x64.tar.gz -O /src/grafana/grafana.tar.gz &&\
-        tar -xzf /src/grafana/grafana.tar.gz -C /opt/grafana --strip-components=1                             &&\
-        rm /src/grafana/grafana.tar.gz
+  mkdir /opt/grafana                                                                                    &&\
+  wget https://dl.grafana.com/oss/release/grafana-6.4.4.linux-amd64.tar.gz -O /src/grafana/grafana.tar.gz &&\
+  tar -xzf /src/grafana/grafana.tar.gz -C /opt/grafana --strip-components=1                             &&\
+  rm /src/grafana/grafana.tar.gz
 
 
 # ----------------- #
