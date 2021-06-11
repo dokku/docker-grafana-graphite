@@ -1,4 +1,4 @@
-# StatsD + Graphite + Grafana 6.4.4
+# StatsD + Graphite + Grafana 8
 
 [![dokku/docker-grafana-graphite](http://dockeri.co/image/dokku/docker-grafana-graphite)](https://registry.hub.docker.com/u/dokku/docker-grafana-graphite/)
 
