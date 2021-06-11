@@ -1,4 +1,4 @@
-FROM     ubuntu:14.04
+FROM     ubuntu:20.04
 
 # ---------------- #
 #   Installation   #
@@ -7,49 +7,26 @@ FROM     ubuntu:14.04
 ENV DEBIAN_FRONTEND noninteractive
 
 # Install all prerequisites
-RUN     apt-get -y update
-RUN     apt-get -y install software-properties-common
-RUN     add-apt-repository -y ppa:chris-lea/node.js
-RUN     apt-get -y update
-RUN     apt-get -y install python-django-tagging python-simplejson python-memcache python-ldap python-cairo python-pysqlite2 python-support \
-  python-pip gunicorn supervisor nginx-light nodejs git wget curl openjdk-7-jre build-essential python-dev
+RUN apt-get -y update
 
-RUN     pip install Twisted==11.1.0
-RUN     pip install Django==1.5
-RUN     pip install pytz
-RUN     npm install ini chokidar
+# See https://grafana.com/docs/grafana/latest/installation/debian/
+RUN apt-get install -y apt-transport-https
+RUN apt-get install -y software-properties-common curl
+RUN curl -sSf https://packages.grafana.com/gpg.key | apt-key add -
+RUN echo "deb https://packages.grafana.com/oss/deb stable main" | tee -a /etc/apt/sources.list.d/grafana.list
+RUN apt-get -y update
+RUN apt-get -y install supervisor nginx-light grafana build-essential
 
-# Checkout the stable branches of Graphite, Carbon and Whisper and install from there
-RUN     mkdir /src
-RUN     git clone https://github.com/graphite-project/whisper.git /src/whisper            &&\
-  cd /src/whisper                                                                   &&\
-  git checkout 0.9.x                                                                &&\
-  python setup.py install
+# The official original statsd package https://www.npmjs.com/package/statsd
+RUN apt-get -y install nodejs npm
+RUN npm install statsd
 
-RUN     git clone https://github.com/graphite-project/carbon.git /src/carbon              &&\
-  cd /src/carbon                                                                    &&\
-  git checkout 0.9.x                                                                &&\
-  python setup.py install
-
-
-RUN     git clone https://github.com/graphite-project/graphite-web.git /src/graphite-web  &&\
-  cd /src/graphite-web                                                              &&\
-  git checkout 0.9.x                                                                &&\
-  python setup.py install
-
-# Install StatsD
-RUN     git clone https://github.com/etsy/statsd.git /src/statsd                                                                        &&\
-  cd /src/statsd                                                                                                                  &&\
-  git checkout v0.8.0
-
-
-# Install Grafana
-RUN     mkdir /src/grafana                                                                                    &&\
-  mkdir /opt/grafana                                                                                    &&\
-  wget https://dl.grafana.com/oss/release/grafana-6.4.4.linux-amd64.tar.gz -O /src/grafana/grafana.tar.gz &&\
-  tar -xzf /src/grafana/grafana.tar.gz -C /opt/grafana --strip-components=1                             &&\
-  rm /src/grafana/grafana.tar.gz
-
+# See https://github.com/graphite-project/graphite-web/blob/1.1.x/docs/install-pip.rst
+RUN apt-get -y install python3-pip gunicorn python3-dev libffi-dev libcairo2
+ENV PYTHONPATH="/opt/graphite/lib/:/opt/graphite/webapp/"
+RUN pip install --no-binary=:all: https://github.com/graphite-project/whisper/tarball/master && \
+    pip install --no-binary=:all: https://github.com/graphite-project/carbon/tarball/master && \
+    pip install --no-binary=:all: https://github.com/graphite-project/graphite-web/tarball/master
 
 # ----------------- #
 #   Configuration   #
@@ -69,10 +46,10 @@ RUN     touch /opt/graphite/storage/graphite.db /opt/graphite/storage/index
 RUN     chown -R www-data /opt/graphite/storage
 RUN     chmod 0775 /opt/graphite/storage /opt/graphite/storage/whisper
 RUN     chmod 0664 /opt/graphite/storage/graphite.db
-RUN     cd /opt/graphite/webapp/graphite && python manage.py syncdb --noinput
+RUN     django-admin migrate --settings=graphite.settings
 
 # Configure Grafana
-ADD     ./grafana/custom.ini /opt/grafana/conf/custom.ini
+ADD     ./grafana/custom.ini /etc/grafana/grafana.ini
 
 # Add the default dashboards
 RUN     mkdir /src/dashboards
