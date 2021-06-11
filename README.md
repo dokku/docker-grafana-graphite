@@ -8,7 +8,7 @@ There are two ways for using this image:
 
 ## Using the Docker Index
 
-All you eed as a prerequisite is having `docker`, `docker-compose`, and `make` installed on your machine. The container exposes the following ports:
+All you need as a prerequisite is having `docker`, `docker-compose`, and `make` installed on your machine. The container exposes the following ports:
 
 - `80`: the Grafana web interface.
 - `81`: the Graphite web port
