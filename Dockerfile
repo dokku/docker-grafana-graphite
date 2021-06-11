@@ -8,17 +8,20 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Install all prerequisites
 RUN apt-get -y update
+
+# See https://grafana.com/docs/grafana/latest/installation/debian/
 RUN apt-get install -y apt-transport-https
 RUN apt-get install -y software-properties-common curl
 RUN curl -sSf https://packages.grafana.com/gpg.key | apt-key add -
 RUN echo "deb https://packages.grafana.com/oss/deb stable main" | tee -a /etc/apt/sources.list.d/grafana.list
-RUN     apt-get -y update
-RUN     apt-get -y install supervisor nginx-light grafana build-essential
+RUN apt-get -y update
+RUN apt-get -y install supervisor nginx-light grafana build-essential
 
-RUN     apt-get -y install nodejs npm
+# The official original statsd package https://www.npmjs.com/package/statsd
+RUN apt-get -y install nodejs npm
 RUN npm install statsd
 
-
+# See https://github.com/graphite-project/graphite-web/blob/1.1.x/docs/install-pip.rst
 RUN apt-get -y install python3-pip gunicorn python3-dev libffi-dev libcairo2
 ENV PYTHONPATH="/opt/graphite/lib/:/opt/graphite/webapp/"
 RUN pip install --no-binary=:all: https://github.com/graphite-project/whisper/tarball/master && \
