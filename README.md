@@ -19,25 +19,25 @@ All you need as a prerequisite is having `docker`, `docker-compose`, and `make` 
 To start a container with this image you just need to run the following command:
 
 ```bash
-$ make up
+make up
 ```
 
 To stop the container
 
 ```bash
-$ make down
+make down
 ```
 
 To run container's shell
 
 ```bash
-$ make shell
+make shell
 ```
 
 To view the container log
 
 ```bash
-$ make tail
+make tail
 ```
 
 If you already have services running on your host that are using any of these ports, you may wish to map the container
@@ -53,7 +53,7 @@ to know how tha image was built. The repo also has `build` and `start` scripts t
 
 Once your container is running all you need to do is:
 
-- open your browser pointing to http://localhost:80 (or another port if you changed it)
+- open your browser pointing to [http://localhost:80](http://localhost:80) (or another port if you changed it)
   - Docker with VirtualBox on macOS: use `docker-machine ip` instead of `localhost`
 - login with the default username (admin) and password (admin)
 - open existing dashboard (or create a new one) and select 'Local Graphite' datasource
@@ -63,7 +63,7 @@ Once your container is running all you need to do is:
 
 When running `make up`, directories are created on your host and mounted into the Docker container, allowing graphite and grafana to persist data and settings between runs of the container.
 
-## Now go explore!
+## Now go explore
 
 We hope that you have a lot of fun with this image and that it serves it's
 purpose of making your life easier.
