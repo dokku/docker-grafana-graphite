@@ -33,14 +33,14 @@ RUN pip install --no-binary=:all: https://github.com/graphite-project/whisper/ta
 # ----------------- #
 
 # Confiure StatsD
-ADD     ./statsd/config.js /src/statsd/config.js
+COPY    ./statsd/config.js /src/statsd/config.js
 
 # Configure Whisper, Carbon and Graphite-Web
-ADD     ./graphite/initial_data.json /opt/graphite/webapp/graphite/initial_data.json
-ADD     ./graphite/local_settings.py /opt/graphite/webapp/graphite/local_settings.py
-ADD     ./graphite/carbon.conf /opt/graphite/conf/carbon.conf
-ADD     ./graphite/storage-schemas.conf /opt/graphite/conf/storage-schemas.conf
-ADD     ./graphite/storage-aggregation.conf /opt/graphite/conf/storage-aggregation.conf
+COPY    ./graphite/initial_data.json /opt/graphite/webapp/graphite/initial_data.json
+COPY    ./graphite/local_settings.py /opt/graphite/webapp/graphite/local_settings.py
+COPY    ./graphite/carbon.conf /opt/graphite/conf/carbon.conf
+COPY    ./graphite/storage-schemas.conf /opt/graphite/conf/storage-schemas.conf
+COPY    ./graphite/storage-aggregation.conf /opt/graphite/conf/storage-aggregation.conf
 RUN     mkdir -p /opt/graphite/storage/whisper
 RUN     touch /opt/graphite/storage/graphite.db /opt/graphite/storage/index
 RUN     chown -R www-data /opt/graphite/storage
@@ -49,18 +49,18 @@ RUN     chmod 0664 /opt/graphite/storage/graphite.db
 RUN     django-admin migrate --settings=graphite.settings
 
 # Configure Grafana
-ADD     ./grafana/custom.ini /etc/grafana/grafana.ini
+COPY    ./grafana/custom.ini /etc/grafana/grafana.ini
 
 # Add the default dashboards
 RUN     mkdir /src/dashboards
-ADD     ./grafana/dashboards/* /src/dashboards/
-ADD     ./grafana/set-local-graphite-source.sh /src/
+COPY    ./grafana/dashboards/* /src/dashboards/
+COPY    ./grafana/set-local-graphite-source.sh /src/
 RUN     mkdir /src/dashboard-loader
-ADD     ./grafana/dashboard-loader/dashboard-loader.js /src/dashboard-loader/
+COPY    ./grafana/dashboard-loader/dashboard-loader.js /src/dashboard-loader/
 
 # Configure nginx and supervisord
-ADD     ./nginx/nginx.conf /etc/nginx/nginx.conf
-ADD     ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY    ./nginx/nginx.conf /etc/nginx/nginx.conf
+COPY    ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 
 # ---------------- #
