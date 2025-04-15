@@ -24,7 +24,7 @@ RUN npm install --global statsd@0.9.0
 # See https://github.com/graphite-project/graphite-web/blob/1.1.x/docs/install-pip.rst
 RUN apt-get -y install libffi-dev libcairo2 build-essential
 ENV PYTHONPATH="/opt/graphite/lib/:/opt/graphite/webapp/"
-RUN pip install gunicorn flit_core
+RUN pip install gunicorn==23.0.0 flit_core==3.12.0
 RUN pip install --no-binary=:all: https://github.com/graphite-project/whisper/tarball/1.1.10
 RUN pip install --no-binary=:all: https://github.com/graphite-project/carbon/tarball/1.1.10
 RUN pip install --no-binary=:all: https://github.com/graphite-project/graphite-web/tarball/1.1.10
