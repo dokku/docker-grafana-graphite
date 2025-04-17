@@ -1,0 +1,119 @@
+---
+name: docker-push
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_run:
+    workflows: ["lint"]
+    types:
+      - completed
+  push:
+    tags:
+      - "*"
+
+concurrency:
+  group: docker-push-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  push-enabled:
+    name: push-enabled
+    runs-on: ubuntu-22.04
+    outputs:
+      push-enabled: ${{ steps.check.outputs.push-enabled }}
+      docker-image-tag: ${{ steps.check.outputs.docker-image-tag }}
+      is-tagged: ${{ steps.check.outputs.is-tagged }}
+    steps:
+      - name: Check if push allowed
+        id: check
+        run: |
+          image_tag=latest
+          push_enabled=false
+          is_tagged=false
+          if [[ '${{ github.event.workflow_run.head_branch }}' =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            echo -e "\u001b[32mDetected semver tag\u001b[0m"
+            image_tag='${{ github.event.workflow_run.head_branch }}'
+            push_enabled=true
+          elif [[ '${{ github.event.workflow_run.head_branch }}' == "main" ]]; then
+            echo -e "\u001b[32mDetected main branch\u001b[0m"
+            push_enabled=false
+          elif [[ '${{github.ref_name}}' =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            echo -e "\u001b[32mDetected semver tag\u001b[0m"
+            image_tag='${{ github.ref_name }}'
+            push_enabled=true
+            is_tagged=true
+          else
+            echo "::warning ::Unable to detect semver tag or main branch"
+            push_enabled=false
+          fi
+
+          if [[ "$is_tagged" == "true" ]]; then
+            echo -e "\u001b[32mSkipping lint workflow_run check\u001b[0m"
+          else
+            if [[ '${{ github.event.workflow_run.conclusion }}' != 'success' ]]; then
+              echo "::warning ::Unable to detect successful lint workflow_run conclusion"
+              push_enabled=false
+            else
+              echo -e "\u001b[32mDetected success lint workflow_run conclusion\u001b[0m"
+            fi
+          fi
+
+          {
+            echo "push-enabled=${push_enabled}"
+            echo "docker-image-tag=${image_tag}"
+            echo "is-tagged=${is_tagged}"
+          } >>"$GITHUB_OUTPUT"
+
+  docker-push:
+    name: push latest
+    runs-on: ubuntu-22.04
+    needs: push-enabled
+    if: needs.push-enabled.outputs.push-enabled == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate docker metadata
+        id: docker_meta
+        uses: crazy-max/ghaction-docker-meta@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v1.8.5 => c53f88523ad1fcebbdb10b3bb9cfa7ddb69d6677
+        with:
+          images: dokku/docker-grafana-graphite
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v6
+        with:
+          push: ${{ needs.push-enabled.outputs.is-tagged == 'true' }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          tags: dokku/docker-grafana-graphite:${{ needs.push-enabled.outputs.docker-image-tag }}
+          labels: |
+            ${{ steps.docker_meta.outputs.labels }}
+            org.opencontainers.image.version=${{ github.event.workflow_run.head_branch }}
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+      - name: Create Release
+        if: needs.push-enabled.outputs.is-tagged == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+
+      - name: Update Docker Hub Description
+        if: needs.push-enabled.outputs.is-tagged == 'true'
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
