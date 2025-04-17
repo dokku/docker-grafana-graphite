@@ -77,7 +77,7 @@ jobs:
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v1.8.5 => c53f88523ad1fcebbdb10b3bb9cfa7ddb69d6677
         with:
-          images: dokku/ci-docker-image
+          images: dokku/docker-grafana-graphite
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -97,7 +97,7 @@ jobs:
         with:
           push: ${{ needs.push-enabled.outputs.is-tagged == 'true' }}
           platforms: linux/amd64,linux/arm64,linux/arm/v7
-          tags: dokku/ci-docker-image:${{ needs.push-enabled.outputs.docker-image-tag }}
+          tags: dokku/docker-grafana-graphite:${{ needs.push-enabled.outputs.docker-image-tag }}
           labels: |
             ${{ steps.docker_meta.outputs.labels }}
             org.opencontainers.image.version=${{ github.event.workflow_run.head_branch }}
