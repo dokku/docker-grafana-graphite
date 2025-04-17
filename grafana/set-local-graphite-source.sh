@@ -5,8 +5,8 @@ set -e
 sleep 10
 
 curl -X POST 'http://admin:admin@localhost:80/api/datasources' \
-	-H 'Content-Type: application/json;charset=UTF-8' \
-	--data-binary '{
+  -H 'Content-Type: application/json;charset=UTF-8' \
+  --data-binary '{
 		"name":"Local Graphite",
 		"type":"graphite",
 		"url":"http://localhost:8000",
