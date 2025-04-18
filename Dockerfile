@@ -22,7 +22,7 @@ RUN apt-get -y install nodejs npm && \
 # See https://github.com/graphite-project/graphite-web/blob/1.1.x/docs/install-pip.rst
 ENV PYTHONPATH="/opt/graphite/lib/:/opt/graphite/webapp/"
 RUN apt-get -y install libffi-dev libcairo2 build-essential && \
-    pip install gunicorn==23.0.0 flit_core==3.12.0 && \
+    pip install --no-cache-dir gunicorn==23.0.0 flit_core==3.12.0 && \
     pip install --no-cache-dir --no-binary=:all: https://github.com/graphite-project/whisper/tarball/1.1.10 && \
     pip install --no-cache-dir --no-binary=:all: https://github.com/graphite-project/carbon/tarball/1.1.10 && \
     pip install --no-cache-dir --no-binary=:all: https://github.com/graphite-project/graphite-web/tarball/1.1.10
@@ -37,17 +37,17 @@ FROM base
 COPY    ./statsd/config.js /src/statsd/config.js
 
 # Configure Whisper, Carbon and Graphite-Web
-COPY    ./graphite/initial_data.json /opt/graphite/webapp/graphite/initial_data.json
-COPY    ./graphite/local_settings.py /opt/graphite/webapp/graphite/local_settings.py
-COPY    ./graphite/carbon.conf /opt/graphite/conf/carbon.conf
-COPY    ./graphite/storage-schemas.conf /opt/graphite/conf/storage-schemas.conf
-COPY    ./graphite/storage-aggregation.conf /opt/graphite/conf/storage-aggregation.conf
-RUN     mkdir -p /opt/graphite/storage/whisper
-RUN     touch /opt/graphite/storage/graphite.db /opt/graphite/storage/index
-RUN     chown -R www-data /opt/graphite/storage
-RUN     chmod 0775 /opt/graphite/storage /opt/graphite/storage/whisper
-RUN     chmod 0664 /opt/graphite/storage/graphite.db
-RUN     django-admin migrate --settings=graphite.settings
+COPY ./graphite/initial_data.json /opt/graphite/webapp/graphite/initial_data.json
+COPY ./graphite/local_settings.py /opt/graphite/webapp/graphite/local_settings.py
+COPY ./graphite/carbon.conf /opt/graphite/conf/carbon.conf
+COPY ./graphite/storage-schemas.conf /opt/graphite/conf/storage-schemas.conf
+COPY ./graphite/storage-aggregation.conf /opt/graphite/conf/storage-aggregation.conf
+RUN mkdir -p /opt/graphite/storage/whisper && \
+    touch /opt/graphite/storage/graphite.db /opt/graphite/storage/index && \
+    chown -R www-data /opt/graphite/storage && \
+    chmod 0775 /opt/graphite/storage /opt/graphite/storage/whisper && \
+    chmod 0664 /opt/graphite/storage/graphite.db && \
+    django-admin migrate --settings=graphite.settings
 
 # Configure Grafana
 COPY    ./grafana/custom.ini /etc/grafana/grafana.ini
