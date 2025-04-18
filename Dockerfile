@@ -10,24 +10,22 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get -y update
 
 # See https://grafana.com/docs/grafana/latest/installation/debian/
-RUN apt-get install -y apt-transport-https
-RUN apt-get install -y software-properties-common curl
-RUN curl -sSf https://packages.grafana.com/gpg.key | apt-key add -
-RUN echo "deb https://packages.grafana.com/oss/deb stable main" | tee -a /etc/apt/sources.list.d/grafana.list
-RUN apt-get -y update
-RUN apt-get -y install supervisor nginx-light grafana=11.6.0 build-essential
+RUN apt-get install -y apt-transport-https software-properties-common curl && \
+    curl -sSf https://packages.grafana.com/gpg.key | apt-key add - && \
+    echo "deb https://packages.grafana.com/oss/deb stable main" | tee -a /etc/apt/sources.list.d/grafana.list && \
+    apt-get -y update && apt-get -y install supervisor nginx-light grafana=11.6.0 build-essential
 
 # The official original statsd package https://www.npmjs.com/package/statsd
-RUN apt-get -y install nodejs npm
-RUN npm install --global statsd@0.9.0
+RUN apt-get -y install nodejs npm && \
+    npm install --global statsd@0.9.0
 
 # See https://github.com/graphite-project/graphite-web/blob/1.1.x/docs/install-pip.rst
-RUN apt-get -y install libffi-dev libcairo2 build-essential
 ENV PYTHONPATH="/opt/graphite/lib/:/opt/graphite/webapp/"
-RUN pip install gunicorn==23.0.0 flit_core==3.12.0
-RUN pip install --no-binary=:all: https://github.com/graphite-project/whisper/tarball/1.1.10
-RUN pip install --no-binary=:all: https://github.com/graphite-project/carbon/tarball/1.1.10
-RUN pip install --no-binary=:all: https://github.com/graphite-project/graphite-web/tarball/1.1.10
+RUN apt-get -y install libffi-dev libcairo2 build-essential && \
+    pip install gunicorn==23.0.0 flit_core==3.12.0 && \
+    pip install --no-cache-dir --no-binary=:all: https://github.com/graphite-project/whisper/tarball/1.1.10 && \
+    pip install --no-cache-dir --no-binary=:all: https://github.com/graphite-project/carbon/tarball/1.1.10 && \
+    pip install --no-cache-dir --no-binary=:all: https://github.com/graphite-project/graphite-web/tarball/1.1.10
 
 # ----------------- #
 #   Configuration   #
