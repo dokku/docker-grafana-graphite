@@ -75,7 +75,7 @@ jobs:
 
       - name: Generate docker metadata
         id: docker_meta
-        uses: crazy-max/ghaction-docker-meta@dc802804100637a589fabce1cb79ff13a1411302 # v1.8.5 => c53f88523ad1fcebbdb10b3bb9cfa7ddb69d6677
+        uses: docker/metadata-action@v6
         with:
           images: dokku/docker-grafana-graphite
 
