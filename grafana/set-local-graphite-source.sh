@@ -1,8 +1,11 @@
 #!/bin/bash
 set -e
 
-# sleeping for 10 seconds to let grafana get up and running
-sleep 10
+# waiting for grafana to get up and running, which takes longer on a first
+# start or after an upgrade while it migrates its database
+until curl -fsS -o /dev/null 'http://localhost:80/api/health'; do
+  sleep 2
+done
 
 curl -X POST 'http://admin:admin@localhost:80/api/datasources' \
   -H 'Content-Type: application/json;charset=UTF-8' \
