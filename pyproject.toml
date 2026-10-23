@@ -5,7 +5,7 @@ requires-python = "==3.11.*"
 dependencies = [
     "carbon==1.1.10",
     "graphite-web==1.1.10",
-    "gunicorn==23.0.0",
+    "gunicorn==26.2.0",
     "whisper==1.1.10",
 ]
 
