@@ -1,0 +1,23 @@
+[project]
+name = "docker-grafana-graphite"
+version = "0.0.0"
+requires-python = "==3.11.*"
+dependencies = [
+    "carbon==1.1.10",
+    "graphite-web==1.1.10",
+    "gunicorn==23.0.0",
+    "whisper==1.1.10",
+]
+
+[dependency-groups]
+# installed with pip before anything else, since uv publishes no image for
+# every platform this one is built for
+build = [
+    "uv==0.13.5",
+]
+
+[tool.uv]
+package = false
+default-groups = []
+# built from source so that they install under /opt/graphite
+no-binary-package = ["carbon", "graphite-web", "whisper"]

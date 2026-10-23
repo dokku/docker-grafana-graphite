@@ -1,0 +1,7 @@
+{
+  "name": "docker-grafana-graphite-statsd",
+  "private": true,
+  "dependencies": {
+    "statsd": "0.9.0"
+  }
+}

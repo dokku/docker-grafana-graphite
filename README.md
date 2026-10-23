@@ -1,4 +1,4 @@
-# StatsD + Graphite + Grafana 8
+# StatsD + Graphite + Grafana
 
 [![dokku/docker-grafana-graphite](http://dockeri.co/image/dokku/docker-grafana-graphite)](https://registry.hub.docker.com/u/dokku/docker-grafana-graphite/)
 
@@ -62,6 +62,15 @@ Once your container is running all you need to do is:
 ## Persisted Data
 
 When running `make up`, directories are created on your host and mounted into the Docker container, allowing graphite and grafana to persist data and settings between runs of the container.
+
+The container keeps its data in the following paths:
+
+- `/opt/grafana/data`: grafana's database, with its dashboards, users and datasources, and the plugins installed into it
+- `/opt/graphite/storage/whisper`: the metrics carbon has written
+- `/opt/graphite/storage/graphite.db`: graphite-web's database
+- `/opt/graphite/conf`: carbon's configuration, including its storage schemas
+
+A `graphite.db` made by an older release is migrated when the container starts, keeping its contents.
 
 ## Now go explore
 
