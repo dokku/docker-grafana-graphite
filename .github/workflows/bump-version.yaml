@@ -15,6 +15,10 @@ on:
           - minor
           - major
 
+# the tag is pushed with GH_ACCESS_TOKEN, so the workflow's own token only reads
+permissions:
+  contents: read
+
 env:
   GITHUB_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 

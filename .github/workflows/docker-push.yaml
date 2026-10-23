@@ -11,6 +11,9 @@ on:
     tags:
       - "*"
 
+permissions:
+  contents: read
+
 concurrency:
   group: docker-push-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -26,20 +29,26 @@ jobs:
     steps:
       - name: Check if push allowed
         id: check
+        # read from the environment rather than pasted into the script, since a
+        # branch name is chosen by whoever opens the pull request
+        env:
+          WORKFLOW_RUN_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          WORKFLOW_RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          REF_NAME: ${{ github.ref_name }}
         run: |
           image_tag=latest
           push_enabled=false
           is_tagged=false
-          if [[ '${{ github.event.workflow_run.head_branch }}' =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+          if [[ "$WORKFLOW_RUN_HEAD_BRANCH" =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]; then
             echo -e "\u001b[32mDetected semver tag\u001b[0m"
-            image_tag='${{ github.event.workflow_run.head_branch }}'
+            image_tag="$WORKFLOW_RUN_HEAD_BRANCH"
             push_enabled=true
-          elif [[ '${{ github.event.workflow_run.head_branch }}' == "main" ]]; then
+          elif [[ "$WORKFLOW_RUN_HEAD_BRANCH" == "main" ]]; then
             echo -e "\u001b[32mDetected main branch\u001b[0m"
             push_enabled=false
-          elif [[ '${{github.ref_name}}' =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+          elif [[ "$REF_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]; then
             echo -e "\u001b[32mDetected semver tag\u001b[0m"
-            image_tag='${{ github.ref_name }}'
+            image_tag="$REF_NAME"
             push_enabled=true
             is_tagged=true
           else
@@ -50,7 +59,7 @@ jobs:
           if [[ "$is_tagged" == "true" ]]; then
             echo -e "\u001b[32mSkipping lint workflow_run check\u001b[0m"
           else
-            if [[ '${{ github.event.workflow_run.conclusion }}' != 'success' ]]; then
+            if [[ "$WORKFLOW_RUN_CONCLUSION" != 'success' ]]; then
               echo "::warning ::Unable to detect successful lint workflow_run conclusion"
               push_enabled=false
             else
@@ -68,6 +77,9 @@ jobs:
     name: push latest
     runs-on: ubuntu-24.04
     needs: push-enabled
+    # creates the github release for a tag
+    permissions:
+      contents: write
     if: needs.push-enabled.outputs.push-enabled == 'true'
     steps:
       - name: Checkout
