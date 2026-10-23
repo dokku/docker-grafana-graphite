@@ -65,7 +65,7 @@ When running `make up`, directories are created on your host and mounted into th
 
 The container keeps its data in the following paths:
 
-- `/opt/grafana/data`: grafana's database, with its dashboards, users and datasources
+- `/opt/grafana/data`: grafana's database, with its dashboards, users and datasources, and the plugins installed into it
 - `/opt/graphite/storage/whisper`: the metrics carbon has written
 - `/opt/graphite/storage/graphite.db`: graphite-web's database
 - `/opt/graphite/conf`: carbon's configuration, including its storage schemas

@@ -32,14 +32,19 @@ ENV GRAPHITE_ROOT=/opt/graphite \
     GRAPHITE_STORAGE_DIR=/opt/graphite/storage \
     GRAPHITE_SETTINGS_MODULE=local_settings \
     PYTHONPATH=/opt/graphite/webapp
-ENV UV_PROJECT_ENVIRONMENT=/usr/local
+# Bytecode is compiled here, for the packages and for the standard library the
+# python image ships without it, so that nothing is written into the container
+# as it runs
+ENV UV_PROJECT_ENVIRONMENT=/usr/local \
+    UV_COMPILE_BYTECODE=1
 COPY ./pyproject.toml ./uv.lock /src/python/
 # uv is installed with pip since it publishes no image for arm/v7. Its version
 # is the one pinned in pyproject.toml's build group, where dependabot bumps it
 # hadolint ignore=DL3013
 RUN apt-get -y install libffi-dev libcairo2 && \
     pip install --no-cache-dir "$(grep -o '"uv==[^"]*"' /src/python/pyproject.toml | tr -d '"')" && \
-    uv sync --project /src/python --locked --no-dev --inexact --no-cache
+    uv sync --project /src/python --locked --no-dev --inexact --no-cache && \
+    python3 -m compileall -q "$(python3 -c 'import sysconfig; print(sysconfig.get_path("stdlib"))')"
 
 # ----------------- #
 #   Configuration   #
@@ -78,6 +83,7 @@ COPY    ./grafana/dashboard-loader/dashboard-loader.js /src/dashboard-loader/
 
 # Configure nginx and supervisord
 COPY    ./nginx/nginx.conf /etc/nginx/nginx.conf
+COPY    ./nginx/start-nginx.sh /src/start-nginx.sh
 COPY    ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 
