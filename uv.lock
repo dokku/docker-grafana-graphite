@@ -97,25 +97,25 @@ wheels = [
 
 [[package]]
 name = "django"
-version = "3.0.14"
+version = "5.2.18"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asgiref" },
-    { name = "pytz" },
     { name = "sqlparse" },
+    { name = "tzdata", marker = "sys_platform == 'win32'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/76/0e/5d847a77b7b42cacd01405b45e4e370124c1d8a15970865df5ab0f09f83a/Django-3.0.14.tar.gz", hash = "sha256:d58d8394036db75a81896037d757357e79406e8f68816c3e8a28721c1d9d4c11", size = 9259569, upload-time = "2021-04-06T07:35:07.952Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/85/fe/79e692b430c7721bf4b812c328bfe687e73e3f28f56611a6a18a97e887cc/django-5.2.18.tar.gz", hash = "sha256:461c5dd06d2ea16bd5ca37d3f46e4def1d6b0fe7588c6f4e2119517bb0af8b2d", size = 10910238, upload-time = "2026-10-06T13:01:09.371Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/34/3b/393482eb369b3c50608b66feac8eabd4c5c15ae80468fb1eccc0b9c136a2/Django-3.0.14-py3-none-any.whl", hash = "sha256:9bc7aa619ed878fedba62ce139abe663a147dccfd20e907725ec11e02a1ca225", size = 7461625, upload-time = "2021-04-06T07:34:56.099Z" },
+    { url = "https://files.pythonhosted.org/packages/d6/01/6568ec52b26548ca1b83d33249f7274db3bf74698f42c0da42ec9db1a24a/django-5.2.18-py3-none-any.whl", hash = "sha256:92ed81d500be6408ecd704d7bd1366c534f30427bffcc63c5fefb129561aec7c", size = 8316071, upload-time = "2026-10-06T13:01:04.413Z" },
 ]
 
 [[package]]
 name = "django-tagging"
-version = "0.4.3"
+version = "0.5.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/ce/fc/a6bc0c286e07732ad3ca90c6db51197fc2c8659c4c93da683ba006f0309a/django-tagging-0.4.3.tar.gz", hash = "sha256:1a76384bb94cb8b7d2defe252d34c32ab18c4fca516c84da78579a5bef572718", size = 45026, upload-time = "2016-05-03T08:53:58.853Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d2/9b/a137d764eb990ac353399d244aa96c7cf02aabe3c58be5a74418406bb838/django-tagging-0.5.0.tar.gz", hash = "sha256:28d68fa4831705e51ad7d1e845ed6dd9e354f9b6f8a5f63b655a430646ef4e8d", size = 42827, upload-time = "2020-03-06T18:00:29.308Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b2/69/b391783b6fda8963558d3338685932de95d8cc51e8f1b7f38527435171b1/django_tagging-0.4.3-py2.py3-none-any.whl", hash = "sha256:06dde7a2a7fbe809989e71c33a86dc999972d9871e54f694005ad2941a265bec", size = 34643, upload-time = "2016-05-03T08:54:17.946Z" },
+    { url = "https://files.pythonhosted.org/packages/84/26/5f9eb215feda7465627dc0902611e27075b526e2072f03fd29302c9a44fb/django_tagging-0.5.0-py3-none-any.whl", hash = "sha256:5932ddcac9aec67cf605eeee06e9c498a022d145fa38d00c82088510d221f315", size = 33752, upload-time = "2020-03-06T18:00:27.143Z" },
 ]
 
 [[package]]
@@ -138,7 +138,7 @@ build = [
 [package.metadata]
 requires-dist = [
     { name = "carbon", specifier = "==1.1.10" },
-    { name = "graphite-web", specifier = "==1.1.10" },
+    { name = "graphite-web", git = "https://github.com/graphite-project/graphite-web?tag=1.2.1-pre2" },
     { name = "gunicorn", specifier = "==26.2.0" },
     { name = "whisper", specifier = "==1.1.10" },
 ]
@@ -148,8 +148,8 @@ build = [{ name = "uv", specifier = "==0.13.5" }]
 
 [[package]]
 name = "graphite-web"
-version = "1.1.10"
-source = { registry = "https://pypi.org/simple" }
+version = "1.2.0"
+source = { git = "https://github.com/graphite-project/graphite-web?tag=1.2.1-pre2#ffaa3d2e289d43e112e81bd3c9dfb64132c42d17" }
 dependencies = [
     { name = "cairocffi" },
     { name = "django" },
@@ -159,7 +159,6 @@ dependencies = [
     { name = "six" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/93/9c/8dac6db74a7f1ed5422027211fbf578ba5aeecd78a7946fe2440249997fc/graphite-web-1.1.10.tar.gz", hash = "sha256:3f1868d505a8da3259600309c7df7d6db10b0d532bed6a7bc2cb2c60f91cd35a", size = 1192965, upload-time = "2022-05-22T18:21:55.847Z" }
 
 [[package]]
 name = "gunicorn"
@@ -292,6 +291,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/f6/cc/6253133b5bb138fc3306cebfbda2c520f545d36b5be2c7255cc528bb45d6/typing_extensions-4.16.0.tar.gz", hash = "sha256:dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5", size = 113555, upload-time = "2026-07-02T08:40:05.92Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/49/d3/b8441a820a491ddfc024b0b0cf0393375b75ea13866d9c66727e54c2fc80/typing_extensions-4.16.0-py3-none-any.whl", hash = "sha256:481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8", size = 45571, upload-time = "2026-07-02T08:40:04.659Z" },
+]
+
+[[package]]
+name = "tzdata"
+version = "2026.5"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d9/68/f1b440335057bfce71b6e50a9d09445aa2ecbd08359a337976627b8409e7/tzdata-2026.5.tar.gz", hash = "sha256:8cc73c0a0bfca7dbfa59235d60b2eff82231dee33f53d206db1acd9173cfc0a7", size = 200404, upload-time = "2026-10-03T09:23:14.143Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/94/21/1e5995a1c920cce14e4bffae20c665ec10e7ed03ab25e006cd741092b718/tzdata-2026.5-py2.py3-none-any.whl", hash = "sha256:b683bd1b6659ddcd810ff02ad09ba821d4bf1065072805063eb35c49617905ac", size = 347996, upload-time = "2026-10-03T09:23:12.535Z" },
 ]
 
 [[package]]

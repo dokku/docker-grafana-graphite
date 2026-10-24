@@ -24,10 +24,11 @@ RUN apt-get -y install nodejs npm && \
     npm ci --omit=dev --prefix /src/statsd
 
 # See https://github.com/graphite-project/graphite-web/blob/1.1.x/docs/install-pip.rst
-# Graphite is installed into site-packages, since its /opt/graphite prefix is
-# only honoured by the setup.py install that pip and uv no longer run, and is
-# pointed at /opt/graphite for its configuration and data instead
-ENV GRAPHITE_ROOT=/opt/graphite \
+# Graphite is installed into site-packages, without the /opt/graphite prefix it
+# otherwise builds into its packages, and is pointed at /opt/graphite for its
+# configuration and data instead
+ENV GRAPHITE_NO_PREFIX=1 \
+    GRAPHITE_ROOT=/opt/graphite \
     GRAPHITE_CONF_DIR=/opt/graphite/conf \
     GRAPHITE_STORAGE_DIR=/opt/graphite/storage \
     GRAPHITE_SETTINGS_MODULE=local_settings \
