@@ -4,7 +4,7 @@ version = "0.0.0"
 requires-python = "==3.11.*"
 dependencies = [
     "carbon==1.1.10",
-    "graphite-web==1.1.10",
+    "graphite-web",
     "gunicorn==26.2.0",
     "whisper==1.1.10",
 ]
@@ -21,3 +21,8 @@ package = false
 default-groups = []
 # built from source so that they install under /opt/graphite
 no-binary-package = ["carbon", "graphite-web", "whisper"]
+
+[tool.uv.sources]
+# graphite-web's pre-release, which is only published as a tag on github. It
+# runs on a supported django and carries security fixes 1.1.10 does not
+graphite-web = { git = "https://github.com/graphite-project/graphite-web", tag = "1.2.1-pre2" }
