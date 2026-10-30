@@ -1,4 +1,4 @@
-FROM     grafana/grafana:13.2.4-ubuntu AS grafana
+FROM     grafana/grafana:13.3.0-ubuntu AS grafana
 
 FROM     python:3.11-bookworm AS base
 
