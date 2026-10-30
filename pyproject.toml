@@ -13,7 +13,7 @@ dependencies = [
 # installed with pip before anything else, since uv publishes no image for
 # every platform this one is built for
 build = [
-    "uv==0.13.5",
+    "uv==0.13.6",
 ]
 
 [tool.uv]
